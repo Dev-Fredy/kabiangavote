@@ -1,0 +1,35 @@
+<form id="sendCredentials">
+  <legend>Vote</legend>
+  <label for="email">Email</label>
+  <input
+    type="text"
+    id="email"
+    placeholder="e.g. bit00002025@students.kabianga.ac.ke"
+  />
+  <label for="code">Code</label>
+  <input type="text" id="code" placeholder="e.g 0000" />
+  <button>Proceed</button>
+</form>
+
+<script>
+  document.querySelector("#sendCredentials").addEventListener("submit", (e) => {
+    e.preventDefault();
+
+    handleSubmit();
+  });
+
+  async function handleSubmit() {
+    let code = document.querySelector("#code").value;
+    let email = document.querySelector("#email").value;
+    let res = await fetch("/", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ email, code }),
+    });
+
+    let response = await res.json();
+    console.log(response);
+  }
+</script>
