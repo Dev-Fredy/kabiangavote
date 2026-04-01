@@ -15,6 +15,12 @@ class Vote {
   async sendCode(req, res) {
     let { email, code } = req.body;
 
+    const validEmail = req.body.email.trim().toLowerCase();
+
+    if (!validEmail.endsWith("@students.kabianga.ac.ke")) {
+      return res.status(400).json("Only student emails are allowed");
+    }
+
     try {
       let results = await voteModel.create({ email, code });
 
