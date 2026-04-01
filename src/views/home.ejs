@@ -22,6 +22,13 @@
   async function handleSubmit() {
     let code = document.querySelector("#code").value;
     let email = document.querySelector("#email").value;
+
+    let validEmail = email.trim().toLowerCase();
+
+    if (!validEmail) {
+      document.querySelector(".submit").innerText = "Use your student email";
+      return;
+    }
     let res = await fetch("/", {
       method: "POST",
       headers: {
