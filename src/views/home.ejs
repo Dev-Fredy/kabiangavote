@@ -25,7 +25,7 @@
 
     let validEmail = email.trim().toLowerCase();
 
-    if (!validEmail) {
+    if (!validEmail.endsWith("@students.kabianga.ac.ke")) {
       document.querySelector(".submit").innerText = "Use your student email";
       return;
     }
