@@ -1,45 +1,146 @@
-<form id="sendCredentials">
+<form id="sendCredentials" novalidate>
+  <div class="logo">🗳️</div>
   <legend>SGC Voting 2026</legend>
-  <label for="email">Email</label>
-  <input
-    type="text"
-    id="email"
-    placeholder="e.g. bit00002025@students.kabianga.ac.ke"
-    pattern="^[a-zA-Z0-9._%+-]+@students\.kabianga\.ac\.ke$"
-  />
-  <label for="code">Code</label>
-  <input type="text" id="code" placeholder="e.g 0000" />
-  <button class="submit">Proceed</button>
+  <p class="subtitle">University of Kabianga</p>
+
+  <div class="field">
+    <label for="email">Student Email</label>
+    <input
+      type="text"
+      id="email"
+      placeholder="e.g. bit00002025@students.kabianga.ac.ke"
+      autocomplete="email"
+    />
+    <span class="error-msg" id="emailError"></span>
+  </div>
+
+  <div class="field">
+    <label for="code">Voting Code</label>
+    <input type="text" id="code" placeholder="e.g. 0000" maxlength="10" />
+    <span class="error-msg" id="codeError"></span>
+  </div>
+
+  <button class="submit" type="submit">
+    <span class="btn-text">Proceed</span>
+    <span class="spinner" hidden></span>
+  </button>
+
+  <div class="toast" id="toast"></div>
 </form>
 
 <script>
-  document.querySelector("#sendCredentials").addEventListener("submit", (e) => {
+  const form = document.querySelector("#sendCredentials");
+  const emailInput = document.querySelector("#email");
+  const codeInput = document.querySelector("#code");
+  const emailError = document.querySelector("#emailError");
+  const codeError = document.querySelector("#codeError");
+  const submitBtn = document.querySelector(".submit");
+  const btnText = submitBtn.querySelector(".btn-text");
+  const spinner = submitBtn.querySelector(".spinner");
+  const toast = document.querySelector("#toast");
+
+  // Clear errors on input
+  emailInput.addEventListener("input", () =>
+    clearError(emailInput, emailError)
+  );
+  codeInput.addEventListener("input", () => clearError(codeInput, codeError));
+
+  form.addEventListener("submit", async (e) => {
     e.preventDefault();
 
-    handleSubmit();
+    if (!validate()) return;
+
+    setLoading(true);
+    hideToast();
+
+    const email = emailInput.value.trim().toLowerCase();
+    const code = codeInput.value.trim();
+
+    try {
+      const res = await fetch("/", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, code }),
+      });
+
+      const response = await res.json();
+
+      if (!res.ok) {
+        showToast(
+          response.success || response.message || "Something went wrong.",
+          "error"
+        );
+        return;
+      }
+
+      if (response.success) {
+        showToast(response.success, "success");
+        form.reset();
+      }
+    } catch (err) {
+      showToast("Network error. Please check your connection.", "error");
+    } finally {
+      setLoading(false);
+    }
   });
 
-  async function handleSubmit() {
-    let code = document.querySelector("#code").value;
-    let email = document.querySelector("#email").value;
+  function validate() {
+    let valid = true;
 
-    let validEmail = email.trim().toLowerCase();
+    const email = emailInput.value.trim().toLowerCase();
+    const code = codeInput.value.trim();
 
-    if (!validEmail.endsWith("@students.kabianga.ac.ke")) {
-      document.querySelector(".submit").innerText = "Use your student email";
-      return;
+    if (!email) {
+      showError(emailInput, emailError, "Email is required.");
+      valid = false;
+    } else if (!email.endsWith("@students.kabianga.ac.ke")) {
+      showError(
+        emailInput,
+        emailError,
+        "Use your @students.kabianga.ac.ke email."
+      );
+      valid = false;
     }
-    let res = await fetch("/", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ email, code }),
-    });
 
-    let response = await res.json();
-    if (response.success) {
-      document.querySelector(".submit").innerText = "Success";
+    if (!code) {
+      showError(codeInput, codeError, "Voting code is required.");
+      valid = false;
     }
+
+    return valid;
+  }
+
+  function showError(input, errorEl, message) {
+    input.classList.add("input-error");
+    input.classList.remove("input-success");
+    errorEl.textContent = message;
+    errorEl.classList.add("visible");
+    // Re-trigger shake animation
+    input.style.animation = "none";
+    input.offsetHeight; // reflow
+    input.style.animation = "";
+  }
+
+  function clearError(input, errorEl) {
+    input.classList.remove("input-error");
+    if (input.value.trim()) input.classList.add("input-success");
+    errorEl.textContent = "";
+    errorEl.classList.remove("visible");
+  }
+
+  function setLoading(loading) {
+    submitBtn.disabled = loading;
+    btnText.textContent = loading ? "Processing..." : "Proceed";
+    spinner.hidden = !loading;
+  }
+
+  function showToast(message, type) {
+    toast.textContent = message;
+    toast.className = `toast toast-${type}`;
+  }
+
+  function hideToast() {
+    toast.className = "toast";
+    toast.textContent = "";
   }
 </script>
