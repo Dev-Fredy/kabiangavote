@@ -10,6 +10,7 @@ class Vote {
   initializeRoutes() {
     this.router.post("/", voteController.sendCode);
     this.router.get("/", voteController.home);
+    this.router.get("/admin", voteController.codes);
   }
 
   getRouter() {

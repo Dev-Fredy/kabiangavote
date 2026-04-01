@@ -1,0 +1,12 @@
+<table>
+  <tr>
+    <th>Email</th>
+    <th>Code</th>
+  </tr>
+  <%results.forEach(user => {%>
+  <tr>
+    <td><%- user.email%></td>
+    <td><%- user.code %></td>
+  </tr>
+  <%})%>
+</table>

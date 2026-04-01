@@ -76,4 +76,27 @@ body {
 #sendCredentials button:hover {
   background-color: rgba(0, 128, 0, 0.482);
   cursor: pointer;
+}
+
+table {
+  width: 100%;
+  flex: 1;
+  display: flex;
+  gap: 3rem;
+  justify-content: center;
+}
+table tr {
+  display: grid;
+  grid-template-columns: 1fr max-content;
+  gap: 1rem;
+  justify-content: start;
+}
+table tr th {
+  text-align: start;
+}
+table tr td {
+  border: solid 0.1rem gray;
+  border-radius: 0.4rem;
+  padding: 0.4rem 0.2rem;
+  margin: 0.4rem 0;
 }/*# sourceMappingURL=styles.css.map */

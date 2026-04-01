@@ -1,8 +1,16 @@
+const db = require("../config/db");
 const voteModel = require("../models/vote.model");
 
 class Vote {
   async home(req, res) {
     return res.render("home");
+  }
+  async codes(req, res) {
+    let [results] = await db.execute("select * from student");
+
+    res.render("admin", {
+      results,
+    });
   }
   async sendCode(req, res) {
     let { email, code } = req.body;

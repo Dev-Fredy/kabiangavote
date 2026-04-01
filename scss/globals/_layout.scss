@@ -64,3 +64,30 @@ body {
     }
   }
 }
+
+table {
+  width: 100%;
+  flex: 1;
+  display: flex;
+
+  gap: 3rem;
+  justify-content: center;
+
+  tr {
+    display: grid;
+    grid-template-columns: 1fr max-content;
+    gap: 1rem;
+    justify-content: start;
+
+    th {
+      text-align: start;
+    }
+
+    td {
+      border: solid 0.1rem gray;
+      border-radius: 0.4rem;
+      padding: 0.4rem 0.2rem;
+      margin: 0.4rem 0;
+    }
+  }
+}
