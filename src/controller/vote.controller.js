@@ -18,13 +18,15 @@ class Vote {
     const validEmail = req.body.email.trim().toLowerCase();
 
     if (!validEmail.endsWith("@students.kabianga.ac.ke")) {
-      return res.status(400).json("Only student emails are allowed");
+      return res
+        .status(400)
+        .json({ success: "Only student emails are allowed" });
     }
 
     try {
       let results = await voteModel.create({ email, code });
 
-      res.json({ success: true });
+      res.json({ success: "Redirecting ..." });
     } catch (error) {
       console.error(error);
     }
