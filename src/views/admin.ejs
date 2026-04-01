@@ -1,6 +1,6 @@
 <div class="table-wrapper">
   <div class="table-header">
-    <h2>🗳️ Submitted Credentials</h2>
+    <h2>🗳️ Registered Voters</h2>
     <span class="count"
       ><%= results.length %> record<%= results.length !== 1 ? 's' : '' %></span
     >
@@ -19,14 +19,27 @@
           <th>#</th>
           <th>Email</th>
           <th>Code</th>
+          <th></th>
         </tr>
       </thead>
       <tbody>
         <% results.forEach((user, index) => { %>
-        <tr class="fade-row" style="animation-delay: <%= index * 40 %>ms">
+        <tr
+          class="fade-row"
+          style="animation-delay: <%= index * 40 %>ms"
+          data-id="<%= user.id %>"
+        >
           <td class="row-num"><%= index + 1 %></td>
           <td><%= user.email %></td>
           <td><span class="code-badge"><%= user.code %></span></td>
+          <td>
+            <button
+              class="delete-btn"
+              onclick="deleteRow(this, <%= user.id %>)"
+            >
+              Delete
+            </button>
+          </td>
         </tr>
         <% }) %>
       </tbody>
@@ -34,3 +47,32 @@
   </div>
   <% } %>
 </div>
+
+<script>
+  async function deleteRow(btn, id) {
+    if (!confirm("Remove this record?")) return;
+
+    btn.disabled = true;
+    btn.textContent = "...";
+
+    const res = await fetch("/admin/delete", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ id }),
+    });
+
+    const data = await res.json();
+
+    if (data.success) {
+      const row = btn.closest("tr");
+      row.style.transition = "opacity 0.3s, transform 0.3s";
+      row.style.opacity = "0";
+      row.style.transform = "translateX(20px)";
+      setTimeout(() => row.remove(), 300);
+    } else {
+      btn.disabled = false;
+      btn.textContent = "Delete";
+      alert("Failed to delete. Please try again.");
+    }
+  }
+</script>

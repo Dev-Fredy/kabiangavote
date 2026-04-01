@@ -357,4 +357,30 @@ td {
 }
 .fade-row {
   animation: fadeIn 0.3s ease both;
+}
+
+.delete-btn {
+  border: none;
+  border-radius: 0.4rem;
+  padding: 0.3rem 0.7rem;
+  font-size: 0.8rem;
+  font-family: inherit;
+  font-weight: 600;
+  background: #ffebee;
+  color: #c62828;
+  border: 1px solid #ef9a9a;
+  cursor: pointer;
+  transition: background 0.15s, transform 0.1s;
+}
+
+.delete-btn:hover:not(:disabled) {
+  background: #e53935;
+  color: white;
+  border-color: #e53935;
+  transform: scale(1.04);
+}
+
+.delete-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }/*# sourceMappingURL=index.css.map */

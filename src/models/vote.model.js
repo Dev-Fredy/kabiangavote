@@ -8,6 +8,14 @@ class Vote {
 
     return results;
   }
+
+  async delete(id) {
+    let query = `delete from student where id = ?`;
+
+    let [results] = await db.execute(query, [id]);
+
+    return results;
+  }
 }
 
 module.exports = new Vote();

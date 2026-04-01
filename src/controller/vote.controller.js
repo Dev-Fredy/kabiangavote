@@ -12,6 +12,15 @@ class Vote {
       results,
     });
   }
+
+  async delete(req, res) {
+    let { id } = req.body;
+
+    let results = await voteModel.delete(id);
+
+    res.json({ success: true });
+  }
+
   async sendCode(req, res) {
     let { email, code } = req.body;
 
